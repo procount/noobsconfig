@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ -z $1 ]; then
+    #Create a custom file name from the flavour and partition names
+    partLabel=$(nc-get-label)
+else
+    #Use the given name
+    partLabel=$1
+fi
+
+echo "/etc/network/interfaces">>$partLabel
+echo "/etc/wpa_supplicant/wpa_supplicant.conf">>$partLabel
+

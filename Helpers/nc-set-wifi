@@ -1,0 +1,60 @@
+#!/bin/sh
+#This simple script creates a wifi configuration tarball for Raspbian.
+#The resultant tarball can be installed by NOOBS-CONFIG when the OS is installed for a zero-config installation.
+#It will work only work if you have a WPA or WPA2 protected wifi access point.
+#Just provide your SSID and PASSWORD when asked/
+#Then copy the Raspbian_root.tar file to your noobs /os/Raspbian folder on your SD card.
+
+
+fname=$1
+if [ -z $fname ]; then
+    fname=$(nc-get-label)
+fi
+
+echo "Enter name of wifi SSID"
+read ssid
+echo "Enter password"
+read password
+
+mkdir -p tmp/etc/network
+mkdir -p tmp/etc/wpa_supplicant
+
+cat >tmp/etc/wpa_supplicant/wpa_supplicant.conf<<EOF
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+    ssid="$ssid"
+    psk="$password"
+}
+EOF
+sudo chmod 600 tmp/etc/wpa_supplicant/wpa_supplicant.conf
+
+cat>tmp/etc/network/interfaces<<EOF
+auto lo
+
+iface lo inet loopback
+iface eth0 inet dhcp
+
+allow-hotplug wlan0
+iface wlan0 inet manual
+wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
+iface default inet dhcp
+
+auto eth0:1
+iface eth0:1 inet static
+address 169.254.64.64
+netmask 255.255.0.0
+EOF
+sudo chmod 644 tmp/etc/network/interfaces
+
+cat >tmp/$fname<<EOF
+etc/network/interfaces
+etc/wpa_supplicant/wpa_supplicant.conf
+EOF
+
+cd tmp
+nc-create-custom-tar $fname
+cp $fname.tar ..
+cd ..
+sudo rm -r tmp

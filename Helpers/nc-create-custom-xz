@@ -1,0 +1,7 @@
+label=$1
+if [ -z "$label" ];then
+   label=$(nc-get-label)
+fi
+
+sudo tar cvf $label.tar -T $label
+sudo xz $label.tar

@@ -1,0 +1,2 @@
+wifi/interfaces /etc/network 0644 root root
+wifi/wpa_supplicant.conf /etc/wpa_supplicant 0600 root root

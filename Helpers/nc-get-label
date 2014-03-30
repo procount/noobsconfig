@@ -1,0 +1,46 @@
+#!/bin/sh
+
+#set -x
+
+#Get the location of the OS images
+imagefolder=`sed -n "s/.*\"imagefolder\".*:.*\"\(.*\)\".*/\1/p" </boot/os_config.json`
+
+#Get the OS flavour installed
+flavour=`sed -n "s/.*\"flavour\".*:.*\"\(.*\)\".*/\1/p" </boot/os_config.json |sed "s/ \+/_/g"`
+
+#Get the list of partition names used
+partLabels=`sed -n "s/.*\"label\".*:.*\"\(.*\)\".*/\1/p" <$imagefolder/partitions.json`
+
+#Get the number of partitions used.
+numparts=`echo $partLabels |wc -w`
+
+get_label()
+{
+    local part=$1
+    if [ $numparts -eq 1 ]; then
+        label=$partLabels
+    else
+        if [ $part -eq 1 ]; then
+            label=`echo $partLabels|sed -n "s/\(.*\) \(.*\)/\1/p"`
+        else
+            label=`echo $partLabels|sed -n "s/\(.*\) \(.*\)/\2/p"`
+        fi
+    fi
+}
+
+if [ -z $1 ]; then
+    part=$numparts
+else
+    part=$1
+fi
+
+if [ $part -gt $numparts ]; then
+    $part=$numparts
+fi
+
+#Get the partition name
+get_label $part
+#Create a custom file name from the flavour and partition names
+echo $flavour"_"$label
+
+

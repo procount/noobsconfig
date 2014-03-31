@@ -97,7 +97,7 @@ A filename ending in `.tar.xz` is decompressed, and untarred onto the appropriat
 
 So to add/replace some custom files on your distro, you just need to create a tar ball with the correct name, optionally compress it using XZ, drop it into the distro folder and install the distro as usual - simples! Some helper scripts are provided to help create these tarballs (see the Helpers folder).
 
-(Filenames ending in `.txt` are processed according to the Advanced Customisation section described below.)
+(A filename with the appropriate basename ending in `.txt` is processed according to the Advanced Customisation section described below.)
 
 If you add any other distros, flavours or OS partition names, you need to name the custom files according to the filename format above and add the following line to the partition_setup.sh script for that distro:
         `if [ -e /mnt/customise.sh ]; then . /mnt/customise.sh; fi`
@@ -149,15 +149,16 @@ There are five fields as follows (separated by spaces):
 
 	Filename destination attributes user group
 
-Only the filename field is mandatory; the others can be omitted and default values will then be applied. If you want to omit a field but follow it with another field, then use a '#' instead to keep the relative placement of the fields.
+Only the filename field is mandatory and it is the only field used for TAR and XZ files; the others can be omitted and default values will then be applied. If you want to omit a field but follow it with another field, then use a '#' instead to keep the relative placement of the fields.
 
 Here are some examples to illustrate this:
 * Readme.txt
 * Readme.txt # 0644
+* nc-helpers.tar
 * wifi/interfaces /etc/network 0644 root root
 * wifi/wpa_supplicant.conf /etc/wpa_supplicant 0600 root root
 
-(The last 2 exampels above show how using this direct copy technique, it is possible to specify the '/etc/network/interfaces' and '/etc/wpp_supplicant/wpa_supplicant.conf' files for easy wifi setup from Windows, whilst specifying the correct attributes and avoiding the problem of creating Tar files from Windows.)
+(The last 2 examples above show how using this direct copy technique, it is possible to specify the '/etc/network/interfaces' and '/etc/wpp_supplicant/wpa_supplicant.conf' files for easy wifi setup from Windows, whilst specifying the correct attributes and avoiding the problem of creating Tar files from Windows.)
 
 ####Filename####
 This is the name of the file you want to copy from the recovery partition.
@@ -180,5 +181,11 @@ This specifies the new user of the file e.g. 'pi' or 'root'
 
 ####Group####
 This specifies the new group of the file e.g. 'root'
+
+###Selecting a Method of customisation###
+It can be confusing to decide which type of customisation to use, so here is a short guide.
+* TAR files are very convenient when there are many related files to be installed, possibly in different folders, and where file permissions or ownership are important. They capture the contents, ownership and permissions of each file into a single TAR file which is then easily managed. So they are best created directly on an existing distro on the RPi. Not so many compression programs allow you to create a TAR file on Windows (7-zip can), but nevertheless, the file permissions and attributes cannot be set. Plain TAR files are not compressed and append 2 blocks of 512kB at the end. So the minimum size of a TAR file is 10kB. This can be quite an overhead if you only want to install a couple of small script files.
+* TAR.XZ files are TAR files that have been compressed using the XZ program. They therefore retain the advantages of the TAR file's manageability, but also avoid the TAR file's largish size. It is best to compress them on the RPi, but it can be done on another Linux distro, but not so easily on Windows.
+* If you want to create your customisation on Windows, referencing files from the TXT file may be the easiest method. This does not provide any compression, nor does it collect the file into one file for manageability. However, it does provide control of user permissions and ownership. This is also a convenient method if you only want to install 1 or 2 small files. If you are creating script files on Windows, be careful to choose Linux line endings. Some editing programs, like Notepad++ allow you to visualise the line endings and change them from Windows to Linux and vice versa.
 
 

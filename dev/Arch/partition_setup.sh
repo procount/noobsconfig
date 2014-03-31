@@ -20,6 +20,8 @@ mkdir /tmp/2
 mount ${part1} /tmp/1
 mount ${part2} /tmp/2
 
+if [ -e /mnt/customise.sh ];then /mnt/customise.sh; fi
+
 # adjust files
 sed -ie "s|@ROOT@|${part2}|" /tmp/1/cmdline.txt
 sed -ie "s|@BOOT@|${part1}|" /tmp/2/etc/fstab

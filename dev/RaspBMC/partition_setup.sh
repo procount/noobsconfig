@@ -6,6 +6,9 @@ set -x
 tune2fs -c 0 $part2
 # Temporary mounting directory
 mkdir -p /tmp/mount
+
+if [ -e /mnt/customise.sh ]; then /mnt/customise.sh; fi
+
 # Fix the cmdline.txt
 mount $part1 /tmp/mount
 eval "sed -e s:/dev/mmcblk0p2:$part2: -i /tmp/mount/cmdline.txt"
@@ -20,5 +23,4 @@ umount /tmp/mount
 # Wait
 sync
 
-if [ -e /mnt/customise.sh ]; then /mnt/customise.sh; fi
 

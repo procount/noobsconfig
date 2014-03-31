@@ -13,6 +13,8 @@ mkdir /tmp/2
 mount ${part1} /tmp/1
 mount ${part2} /tmp/2
 
+if [ -e /mnt/customise.sh ]; then /mnt/customise.sh; fi
+
 # adjust files
 sed -ie "s|root=/dev/mmcblk0p[0-9]|root=${part2}|" /tmp/1/cmdline.txt
 sed -ie "s|^.* / |${part2}      / |" /tmp/2/etc/fstab
@@ -22,5 +24,4 @@ sed -ie "s|^.* /boot |${part1}      /boot |" /tmp/2/etc/fstab
 umount /tmp/1
 umount /tmp/2
 
-if [ -e /mnt/customise.sh ]; then /mnt/customise.sh; fi
 

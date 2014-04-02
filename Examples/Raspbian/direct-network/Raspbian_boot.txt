@@ -1,2 +1,7 @@
-direct-network/cmdline.txt 
-
+direct/cmdline.txt 
+direct/network/cmdline.direct /network
+direct/network/cmdline.internet /network
+direct/network/cmdline.normal /network
+direct/network/cmdline.txt /network
+direct/network/README.txt /network
+direct/network/switchip.sh /network 0644

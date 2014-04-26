@@ -188,4 +188,7 @@ It can be confusing to decide which type of customisation to use, so here is a s
 * TAR.XZ files are TAR files that have been compressed using the XZ program. They therefore retain the advantages of the TAR file's manageability, but also avoid the TAR file's largish size. It is best to compress them on the RPi, but it can be done on another Linux distro, but not so easily on Windows.
 * If you want to create your customisation on Windows, referencing files from the TXT file may be the easiest method. This does not provide any compression, nor does it collect the file into one file for manageability. However, it does provide control of user permissions and ownership. This is also a convenient method if you only want to install 1 or 2 small files. If you are creating script files on Windows, be careful to choose Linux line endings. Some editing programs, like Notepad++ allow you to visualise the line endings and change them from Windows to Linux and vice versa.
 
-
+##Examples##
+You will find some examples of how to apply some configurations to Raspbian in the Examples/Raspbian folder.
+Please see zeroconf_wifi.md for a very quick setup of a WPA/WPA2 wifi network.
+I welcome other examples, particularly of the other Linux distros.

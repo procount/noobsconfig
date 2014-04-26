@@ -2,7 +2,7 @@ NOOBSConfig - wifi example
 ==========================
 This example demonstrates how you can configure your Raspbian wifi connection so that it works straight out of the box when Raspbian is installed. The method used in this example permits the wifi to be configured on the SD card using Windows. There are also alternative examples provided in the Helpers folder to configure the wifi on the RPi using simple scripts. 
 
-This example assumes that the wifi dongle you use is directly supported by Raspbian. If the donlge is not supported, you may have to install a specific wifi driver or dongle firmware first.
+This example assumes that the wifi dongle you use is directly supported by Raspbian. If the dongle is not supported, you may have to install a specific wifi driver or dongle firmware first.
 
 Copying the files in this folder and below into the /os/Raspbian folder on your NOOBS recovery partition will install two wifi configuration files onto the RPi. You should edit them according to your wifi configuration before you copy them.
 

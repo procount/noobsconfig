@@ -6,24 +6,31 @@ Allows you to customise the installation of a NOOBS distro installation
 ##Introduction##
 This repository contains files to customise the installation of a standard NOOBS distro installation on a Raspberry Pi.
 
-After NOOBS installs the standard boot and root images to the SD card, this modification allows a custom set of files to be copied, decompressed and extracted onto each partition of the distro/flavour being installed.
+After NOOBS installs the standard boot and root images to the SD card, this modification allows a custom set of files to be copied, decompressed and extracted onto each partition of the distro being installed.
+
+Please note: this will only work with the standard version of NOOBS and not with NOOBS-lite. It will not work with raw image files like RISC_OS.
 
 A quick description of how to use this is followed by a more detailed description below.
 
 
 ##Quick Start##
 1. Unzip/copy the standard NOOBS files to a blank SD card.
-2. Unzip/copy the noobsconfig.zip over the top of the noobs files.<br>
+2. Unzip/copy the noobsconfig.zip over the top of the noobs files. (This will overwrite the partition_setup.sh files for each of the os distros).
 Your NOOBS SD card is now modified to support customisations!
 3. Put any customisation files in the /os/distro folders.
 4. Insert your SD card in the RPi and install the desired OS as usual
 
 ###Customisation Files###
+
+First, a brief explanantion about `flavours`.
+For each distro NOOBS allows different `flavours`, which allow the same distro to be installed, but with slightly different customised options that are applied on first boot. Currently this feature is only used on Raspbian to allow booting into the desktop or straight to scratch, but it could be applied to any distro. In this documentation I use `flavour` to represent the "os name or flavour name". Typically a flavour name is the os name appended with a dash and the flavour. See `flavours.json` if it exists for your distro.
+
 Three types of customisation files can be used. They must all have the same base filename of `(flavour)_(partitionName)` and differ in the three extensions that may be used:
 * `(flavour)_(partitionName).tar`
 * `(flavour)_(partitionName).tar.xz`
 * `(flavour)_(partitionName).txt`
- 
+
+(Any spaces in the flavour or partitionName should be replaced by underscores)
 The above files can be used individually or in combination. If more than one is found they are processed in the above order. They should be placed in the os/(distro) folder.
 The .tar file will be un-tarred to the root of the appropriate partition.
 The .xz file is assumed to be a compressed tar file and is treated in the same way after decompression.
@@ -44,6 +51,7 @@ Some examples of its use are therefore:
 * setting up wifi so that it works "out of the box" (maybe useful for schools etc)
 * installing script files to install other packages (either manually or on first boot - like raspi-config)
 * provide standard configurations for config.txt (instead of requiring raspi-config to be executed on first execution)
+* install a standard set of "lesson support materials" into the `/home/pi` folder.
 
 ###Benefits###
 * ideal for small customisations
@@ -71,7 +79,7 @@ The ability to patch using a flavour would be ideal for schools and others, it c
 After noobs has installed a distro, it runs the `partition_setup.sh` script for that distro.
 Unzipping noobsconfig.zip over noobs replaces the partition_setup.sh files with a new version that adds a single line that executes customise.sh. This customise.sh script looks for files in the distro folder with a basename of (flavour)_(partitionName) and an extension of either `.tar`, `.tar.xz` or `.txt`. (The contents of noobsconfig.zip can be found in the `dev` folder.)
 
-Note that `(flavour)` and `(partitionName)` must exactly match (in characters and case) the names provided in the `*.json` files that describe each OS in order for them to be recognised.
+Note that `(flavour)` and `(partitionName)` must exactly match (in characters and case) the names provided in the `*.json` files that describe each OS in order for them to be recognised. Any spaces should be replaced with underscores.
 So, for the standard v1.3.4 installation of noobs, the following base filenames are valid:
 <pre>
 Arch_boot
@@ -80,15 +88,13 @@ Data_Partition_data
 OpenELEC_Storage
 OpenELEC_System
 Pidora_boot
-Pidora_root
+Pidora_rootfs
 Raspbian_boot
 Raspbian_root
 Raspbian_-_Boot_to_Scratch_boot
-Raspbian_-_Boot_to_Scratch_boot
+Raspbian_-_Boot_to_Scratch_root
 RaspBMC_boot
 RaspBMC_root
-RISC_OS_RISC_OS
-RISC_OS_RISC_OS_boot
 </pre>
 
 If a file is found with the appropriate base filename above and one of the following extensions, then the following actions are carried out:
@@ -101,8 +107,7 @@ So to add/replace some custom files on your distro, you just need to create a ta
 
 If you add any other distros, flavours or OS partition names, you need to name the custom files according to the filename format above and add the following line to the partition_setup.sh script for that distro:
         `if [ -e /mnt/customise.sh ]; then . /mnt/customise.sh; fi`
-This can also be used on the data partition - just create a partition_setup.sh file containing just this line.
-
+This technique can also be used on the data partition - just create a partition_setup.sh file containing just this line. However, it is not really necessary as you could more easily just replace the original data.tar.xz file with your own, since it only contains a README.txt file.
 
 ###How to Create a Custom Tarball###
 
@@ -112,25 +117,25 @@ These instructions assume you already have a working installation of a distro on
 2. Modify any existing, or create any new files that you want to be included in your customisation.
 3. For manageability I suggest creating a simple text file that contains a list of all the new/modified files that you want, with one fullpathname on each line.
 For example:
-<pre>
-$>sudo nano files.txt<br>
+
+```$>sudo nano files.txt<br>
 /etc/network/interfaces
-/etc/init.d/rc.local
-</pre>
+/etc/init.d/rc.local```
+
 4. Now create the tar ball using this text file as input, as follows:
-<pre>
-$>sudo tar cvf &lt;flavour&gt;_&lt;partitionName&gt;.tar -T files.txt
-$>sudo xz &lt;flavour&gt;_&lt;partitionName&gt;.tar
-</pre>
+
+```$>sudo tar cvf &lt;flavour&gt;_&lt;partitionName&gt;.tar -T files.txt
+$>sudo xz &lt;flavour&gt;_&lt;partitionName&gt;.tar```
+
 (See the Helpers folder for alternative ways to do this using scripts).
 5. Copy the tarball to the appropriate OS folder.
 
 ###Advanced Customisation###
 Sometimes, you may want to have greater control over your customisations. Maybe you want to:
-* segregate them into separate tar files for distinct uses
+* segregate them into separate tar files for distinct uses.
 * give them better names according to their use.
-* have easier control over which ones should be installed
-* share files between flavours
+* have easier control over which ones should be installed.
+* share files between different flavours of the same distro.
 * provide raw files that are not tarred or compressed, e.g. by direct copying on to the recovery partition using Windows.
 For these and other uses, the (flavour)_(partitionName).txt file can be useful.
 
@@ -158,37 +163,39 @@ Here are some examples to illustrate this:
 * wifi/interfaces /etc/network 0644 root root
 * wifi/wpa_supplicant.conf /etc/wpa_supplicant 0600 root root
 
-(The last 2 examples above show how using this direct copy technique, it is possible to specify the '/etc/network/interfaces' and '/etc/wpp_supplicant/wpa_supplicant.conf' files for easy wifi setup from Windows, whilst specifying the correct attributes and avoiding the problem of creating Tar files from Windows.)
+(The last 2 examples above show how using this direct copy technique, it is possible to specify the '/etc/network/interfaces' and '/etc/wpa_supplicant/wpa_supplicant.conf' files for easy wifi setup from Windows, whilst specifying the correct attributes and avoiding the problem of creating Tar files from Windows.)
 
 ####Filename####
 This is the name of the file you want to copy from the recovery partition.
 It can be stored in the /os/distro folder, or any subfolder. If you put it in a subfolder then this must be specified.
 e.g. 
-To copy the file '/os/Raspbian/readme.txt', use 'readme.txt'
-To copy the file '/os/Raspbian/folder/readme.txt', use 'folder/readme.txt'
+To copy the file `/os/Raspbian/readme.txt`, use `readme.txt`
+To copy the file `/os/Raspbian/folder/readme.txt`, use `folder/readme.txt`
 The folder name is only used to locate the source file. It is not used as part of the destination folder.
 This field is mandatory.
 
+Please note that pathnames and filenames with embedded spaces in them are not currently supported. I hope to have a fix soon.
+
 ####Destination####
-This is the name of the destination folder where the file is to be stored on the target partition, relative to the root. E.g. '/home/pi'. It must begin with a backslash, but have no trailing backslash.
+This is the name of the destination folder where the file is to be stored on the target partition, relative to the root. E.g. `/home/pi`. It must begin with a slash, but have no trailing slash.
 This field is optional. If not specified, then the root directory is used.
 
 ####Attributes####
-This specifies the attributes to be applied to the new file using the chmod command. e.g. '0644'. I guess options such as '+x' would also work but I've not tried.
+This specifies the attributes to be applied to the new file using the chmod command. e.g. `0644`. I guess options such as `+x` would also work but I've not tried.
 
 ####User####
-This specifies the new user of the file e.g. 'pi' or 'root'
+This specifies the new user of the file e.g. `pi` or `root` etc.
 
 ####Group####
-This specifies the new group of the file e.g. 'root'
+This specifies the new group of the file e.g. `root`
 
 ###Selecting a Method of customisation###
 It can be confusing to decide which type of customisation to use, so here is a short guide.
-* TAR files are very convenient when there are many related files to be installed, possibly in different folders, and where file permissions or ownership are important. They capture the contents, ownership and permissions of each file into a single TAR file which is then easily managed. So they are best created directly on an existing distro on the RPi. Not so many compression programs allow you to create a TAR file on Windows (7-zip can), but nevertheless, the file permissions and attributes cannot be set. Plain TAR files are not compressed and append 2 blocks of 512kB at the end. So the minimum size of a TAR file is 10kB. This can be quite an overhead if you only want to install a couple of small script files.
+* TAR files are very convenient when there are many related files to be installed, possibly in different folders, and where file permissions or ownership are important. They capture the contents, ownership and permissions of each file into a single TAR file which is then easily managed. So they are best created directly on an existing distro on the RPi. Not so many compression programs allow you to create a TAR file on Windows (7-zip can), but nevertheless, the file permissions and attributes cannot be set. Plain TAR files are not compressed and append 2 blocks of 512 bytes at the end. So the minimum size of a TAR file is 10kB. This can be quite an overhead if you only want to install a couple of small script files.
 * TAR.XZ files are TAR files that have been compressed using the XZ program. They therefore retain the advantages of the TAR file's manageability, but also avoid the TAR file's largish size. It is best to compress them on the RPi, but it can be done on another Linux distro, but not so easily on Windows.
-* If you want to create your customisation on Windows, referencing files from the TXT file may be the easiest method. This does not provide any compression, nor does it collect the file into one file for manageability. However, it does provide control of user permissions and ownership. This is also a convenient method if you only want to install 1 or 2 small files. If you are creating script files on Windows, be careful to choose Linux line endings. Some editing programs, like Notepad++ allow you to visualise the line endings and change them from Windows to Linux and vice versa.
+* If you want to create your customisation on Windows, referencing files from the TXT file may be the easiest method. This does not provide any compression, nor does it collect the separate files into one single file for manageability. However, it does provide control of user permissions and ownership. This is also a convenient method if you only want to install 1 or 2 small files. If you are creating script files on Windows, be careful to choose Linux line endings. Some editing programs, like Notepad++ allow you to visualise the line endings and change them from Windows to Linux and vice versa.
 
 ##Examples##
 You will find some examples of how to apply some configurations to Raspbian in the Examples/Raspbian folder.
 Please see zeroconf_wifi.md for a very quick setup of a WPA/WPA2 wifi network.
-I welcome other examples, particularly of the other Linux distros.
+I welcome other examples, particularly for the other Linux distros.

@@ -16,16 +16,7 @@ numparts=`echo $partLabels |wc -w`
 
 get_label()
 {
-    local part=$1
-    if [ $numparts -eq 1 ]; then
-        label=$partLabels
-    else
-        if [ $part -eq 1 ]; then
-            label=`echo $partLabels|sed -n "s/\(.*\) \(.*\)/\1/p"`
-        else
-            label=`echo $partLabels|sed -n "s/\(.*\) \(.*\)/\2/p"`
-        fi
-    fi
+    label=`echo $partLabels|cut -d' ' -f$1`
 }
 
 if [ -z $1 ]; then
@@ -35,7 +26,7 @@ else
 fi
 
 if [ $part -gt $numparts ]; then
-    $part=$numparts
+    part=$numparts
 fi
 
 #Get the partition name

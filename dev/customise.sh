@@ -94,16 +94,7 @@ custom_part()
 
 get_label()
 {
-    local part=$1
-    if [ $numparts -eq 1 ]; then
-        label=$partLabels
-    else
-        if [ $part -eq 1 ]; then
-            label=`echo $partLabels|sed -n "s/\(.*\) \(.*\)/\1/p"`
-        else
-            label=`echo $partLabels|sed -n "s/\(.*\) \(.*\)/\2/p"`
-        fi
-    fi
+    label=`echo $partLabels|cut -d' ' -f$1`
 }
 
 for p in `seq $numparts`

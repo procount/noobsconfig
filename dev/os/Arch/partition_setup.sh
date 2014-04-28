@@ -29,6 +29,3 @@ sed -ie "s|@BOOT@|${part1}|" /tmp/2/etc/fstab
 # clean up
 umount /tmp/1
 umount /tmp/2
-
-if [ -e /mnt/customise.sh ];then /mnt/customise.sh; fi
-

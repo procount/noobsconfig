@@ -11,4 +11,4 @@ when you next boot into Raspbian after it is installed. If you want to use a dif
 
 In addition, the `network` folder contains Meltwater's original scripts. With these files copied onto the NOOBS recovery partition, you can edit the cmdline files in Windows to select the IP addresses you want to use for the different network modes: direct, internet or ICS. Still in Windows, you can execute the various WIN*.bat files to select which connection mode you want to use.
 
-Noobsconfig will install the cmdline files and switchip.sh into the /boot/network folder of the installed Raspbian distro. So, after Raspbian is installed, you can use the /boot/network/switchip.sh script to change between the different connection modes on the RPi. Please see Meltwater's comprehensive guiides for more detail.
+Noobsconfig will install the cmdline files and switchip.sh into the /boot/network folder of the installed Raspbian distro. So, after Raspbian is installed, you can use the /boot/network/switchip.sh script to change between the different connection modes on the RPi. Please see Meltwater's comprehensive guides for more detail.

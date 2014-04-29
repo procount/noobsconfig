@@ -5,6 +5,8 @@ NOOBSConfig - helper scripts
 This folder contains script files to help the user create a customised tarball to be installed with a standard NOOBS installation of Raspbian on a Raspberry Pi.
 (They may also work with Arch, Pidora and RaspBMC, but these have not been tested yet)
 
+I have also included an installation package in the examples\nc-helpers folder to install them with noobsconfig, which may be easier.
+
 First you should use NOOBS to install the standard installation of Raspbian, then boot into the Raspbian OS.
 The files in this repository folder should be copied to the /usr/local/bin directory in Raspbian so that they are available from anywhere.
 
@@ -14,7 +16,12 @@ The files in this repository folder should be copied to the /usr/local/bin direc
 * /usr/local/bin/nc-create-custom-tar
 * /usr/local/bin/nc-create-custom-xz
 
-It is probably a good idea to to go back to your home/pi directory before using these files using:
+You will need to make these executable as follows:
+
+`cd /usr/local/bin`
+`sudo chmod +x nc-*`
+
+It is probably a good idea to to go back to your /home/pi directory before using these files using:
 `$ cd ~`
 
 ###nc-get-label###
@@ -25,7 +32,7 @@ If you want the name of the tarball that should be used for the first partition,
 See `nc-set-wifi` for how to use this from within another script.
 
 ###nc-capture-wifi###
-This script is used to used to capture the network and wifi settings after they have been setup by other means, either manually or using a program such as wpa_gui, wpa_cli etc.
+This script is used to capture the network and wifi settings after they have been setup by other means, either manually or using a program such as wpa_gui, wpa_cli etc.
 It simply creates a text file containing the names of the files to be captured:
 * /etc/network/interfaces
 * /etc/wpa_supplicant/wpa_supplicant.conf

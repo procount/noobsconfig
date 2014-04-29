@@ -174,11 +174,14 @@ To copy the file `/os/Raspbian/folder/readme.txt`, use `folder/readme.txt`
 The folder name is only used to locate the source file. It is not used as part of the destination folder.
 This field is mandatory.
 
-Please note that pathnames and filenames with embedded spaces in them are not currently supported. I hope to have a fix soon.
+If you need to include a filename that has embedded spaces in it, then you must enclose it in double quotation marks:
+e.g.
+* "my wifi/interfaces" /etc/network 0644 root root
 
 ####Destination####
 This is the name of the destination folder where the file is to be stored on the target partition, relative to the root. E.g. `/home/pi`. It must begin with a slash, but have no trailing slash.
 This field is optional. If not specified, then the root directory is used.
+If you need to include a destination pathname that includes embedded spaces,then enclose this in double quotations.
 
 ####Attributes####
 This specifies the attributes to be applied to the new file using the chmod command. e.g. `0644`. I guess options such as `+x` would also work but I've not tried.

@@ -153,8 +153,16 @@ custom_part()
     if [ -e $arg_srcfolder/$txtfile ]; then
         while read line
         do
+            #remove trailing CR
             tarfile=`echo $line | tr -d '\r'`
-            process_file "$tarfile"
+            if [ ! -z "$tarfile" ]; then
+                #remove lines starting with '#'
+                tarfile=`echo $tarfile | sed '/^#/d'`
+            fi
+            if [ ! -z "$tarfile" ]; then
+                #Only process non-blank lines
+                process_file "$tarfile"
+            fi
         done<$arg_srcfolder/$txtfile
     fi
     cd /mnt

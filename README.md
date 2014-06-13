@@ -201,7 +201,46 @@ It can be confusing to decide which type of customisation to use, so here is a s
 * TAR.XZ files are TAR files that have been compressed using the XZ program. They therefore retain the advantages of the TAR file's manageability, but also avoid the TAR file's largish size. It is best to compress them on the RPi, but it can be done on another Linux distro, but not so easily on Windows.
 * If you want to create your customisation on Windows, referencing files from the TXT file may be the easiest method. This does not provide any compression, nor does it collect the separate files into one single file for manageability. However, it does provide control of user permissions and ownership. This is also a convenient method if you only want to install 1 or 2 small files. If you are creating script files on Windows, be careful to choose Linux line endings. Some editing programs, like Notepad++ allow you to visualise the line endings and change them from Windows to Linux and vice versa.
 
-##Examples##
+##Testing & Retrospective customisation##
+
+Since noobsconfig executes after NOOBS has installed a distro, it can be a lengthy process to test any customisations as they are developed, because each test potentially means installing a distro and waiting to see the result. Also, if you already have a Raspbian distro installed by noobs, then you probably don't want to have to overwrite it all just to test your scripts. Or maybe you have created a new 'flavour' to install your customisations and you want to install them onto your existing distro that was installed as another flavour.
+
+There is a script called `retro.sh` that is placed on the root of the recovery partition to aid testing, or to apply a customisation retrospectively, i.e. after a distro has already been installed by NOOBS.
+
+The purpose of `retro.sh` is to apply a set of customisations from the recovery partition to the currently installed distro, after that distro has been installed and is now executing. It works on a partition at a time, so if your distro has 2 partitions that you want to customise, you need to run it once for each partition. It requires a bit of work to setup the environment first, and a few arguments to tell it what it does, but these are easily captured into a script.
+
+The main thing that needs to be done is to mount the recovery partition so that it is accessible. Also note that the installation has to be done by the root user (or using sudo) since it may need to (over)write system files.
+
+###retro.sh###
+Usage: sudo ./retro.sh [source folder] [destination folder] [(flavour)_(partitionName)]
+Example1: sudo ./retro.sh /mnt/os/Raspbian / Raspbian_root
+Example2: sudo ./retro.sh /mnt/os/Raspbian /boot/ Raspbian_boot
+
+###Example use of retro.sh###
+Here is an example script file that automates the retrospective installation or testing of a Raspbian customisation.
+
+    #!/bin/sh
+    # Make sure only root can run our script
+    if [ "$(id -u)" != "0" ]; then
+       echo "This script must be run as root" 1>&2
+       exit 1
+    fi
+    
+    #Mount the recovery partition
+    mount /dev/mmcblk0p1 /mnt
+    cdir=`pwd`
+    cd /mnt
+    #Install the customisations
+    ./retro.sh /mnt/os/Raspbian /boot/ RaspbianMyFlavour_boot
+    ./retro.sh /mnt/os/Raspbian / RaspbianMyFlavour_root
+    #Restore 
+    cd $cdir
+    sync
+    sleep 1
+    umount /mnt
+    echo "Customisation done."
+
+##Further Examples##
 You will find some examples of how to apply some configurations to Raspbian in the Examples/Raspbian folder.
 Please see zeroconf_wifi.md for a very quick setup of a WPA/WPA2 wifi network.
 I welcome other examples, particularly for the other Linux distros.

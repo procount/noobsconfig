@@ -156,6 +156,9 @@ There are five fields as follows (separated by spaces):
 
 Only the filename field is mandatory and it is the only field used for TAR and XZ files; the others can be omitted and default values will then be applied. If you want to omit a field but follow it with another field, then use a '#' instead to keep the relative placement of the fields.
 
+Blank lines will be ignored.
+Comments can be added by starting the line with a '#' in the first column, or adding the comment after field 5.
+
 Here are some examples to illustrate this:
 * Readme.txt
 * Readme.txt # 0644

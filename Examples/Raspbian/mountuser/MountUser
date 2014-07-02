@@ -8,9 +8,9 @@ sudo mkdir -p /media/SETTINGS
 sudo mount /dev/mmcblk0p3 /media/SETTINGS
 
 if [ "$1" ]; then
-    MyData="$1"
+    export MyData="$1"
 else
-    MyData="/mnt/DATA"
+    export MyData="/mnt/DATA"
 fi
 
 while read line
@@ -23,7 +23,7 @@ do
 	if [ "$name" ]; then
 		read line
 		if [ "$partname" = "Data_Partition" ]; then
-			data_part=`echo $line | sed -n "s/\"\(.*\)\"/\1/p"`
+			export data_part=`echo $line | sed -n "s/\"\(.*\)\"/\1/p"`
 		fi
 		read line 
 		#end=`echo $line | sed -n "s/]/]/p"`
@@ -34,7 +34,11 @@ sudo umount /media/SETTINGS
 sudo rmdir /media/SETTINGS
 
 if [ "$data_part" ]; then
-    echo "$data_part $MyData ext4 defaults 0 0" | sudo tee -a /etc/fstab >/dev/null
+	sudo sh -c "echo '$data_part $MyData ext4 defaults 0 0'>>/etc/fstab"
+	#echo "$data_part $MyData ext4 defaults 0 0" | sudo tee -a /etc/fstab >/dev/null
 	sudo mkdir -p "$MyData"
 	sudo mount "$data_part" "$MyData" -t ext4
 fi
+
+unset data_part
+unset MyData

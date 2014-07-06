@@ -49,13 +49,11 @@ do
 	fi
 done <$tmpdir/installed_os.json
 
+#Remove the SETTINGS mount
 sudo umount $tmpdir
 sudo rmdir $tmpdir
 
-echo "$data_part"
-echo "$MountPoint"
-echo "$MyFsType"
-
+#Mount the Data_Partition
 if [ "$data_part" ]; then
 	sudo sh -c "echo '$data_part $MountPoint $MyFsType defaults 0 0'>>/etc/fstab"
 	sudo mkdir -p "$MountPoint"

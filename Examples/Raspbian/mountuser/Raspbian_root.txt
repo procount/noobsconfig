@@ -1,1 +1,2 @@
-MountUser /home/pi +x
+#file destinationFolder Attributes user group
+AutoMountDataPartition /home/pi +x

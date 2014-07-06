@@ -1,0 +1,67 @@
+#!/bin/sh
+
+#USAGE: AutoMountDataPartition <mountpoint> <filesystem type>
+
+#Mounts the noobs Data_Partition at the folder location given by the first argument.
+#If no argument is given, it mounts the data partition at /mnt/DATA
+
+set -x
+
+#The partition filesystem is assumed to be ext4. If you want to use a different file system,
+#specify the type as the second argument. e.g. 'vfat' or 'auto'.
+
+#Create a temporary mount point for the noobs settings partition
+tmpdir=`sudo mktemp -d /media/settingXXX`
+#Mount the NOOBS setting partition
+sudo mount /dev/mmcblk0p3 $tmpdir
+
+#Identify the mountpoint
+if [ "$1" ]; then
+    export MountPoint="$1"
+else
+    export MountPoint="/mnt/DATA"
+fi
+
+#Identify the filesystem
+if [ "$2" ]; then
+    export MyFsType="$2"
+else
+    export MyFsType="ext4"
+fi
+
+#Identify the partition of the Data_Partition
+while read line
+do
+    #complicated expression to extract the partition name from installed_os.json
+	name=`echo $line | sed -n "s/\"name\".*:.*\"\(.*\)\".*/\1\r\n/p" | sed "s/ \+/_/g" | tr -d '\r'`
+	if [ "$name" ]; then
+		partname=$name
+	fi
+    #Extract any line with 'partitions' in it
+	name=`echo $line | sed -n "s/\"partitions\"/partitions/p"`
+	if [ "$name" ]; then
+        read line
+		if [ "$partname" = "Data_Partition" ]; then
+            #Get the 1st partition of the Data_Partition
+            export data_part=`echo $line | sed -n "s/\"\(.*\)\"/\1/p"`
+		fi
+		read line 
+	fi
+done <$tmpdir/installed_os.json
+
+sudo umount $tmpdir
+sudo rmdir $tmpdir
+
+echo "$data_part"
+echo "$MountPoint"
+echo "$MyFsType"
+
+if [ "$data_part" ]; then
+	sudo sh -c "echo '$data_part $MountPoint $MyFsType defaults 0 0'>>/etc/fstab"
+	sudo mkdir -p "$MountPoint"
+	sudo mount "$data_part" "$MountPoint" -t "$MyFsType"
+fi
+
+unset data_part
+unset MountPoint
+unset MyFsType

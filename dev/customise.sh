@@ -103,26 +103,33 @@ process_file()
         #cp $arg_srcfolder/$tarfile $arg_dstfolder
         #decompress & Untar the custom file
         #cd $arg_dstfolder
-        ext=`echo $tarfile|awk -F . '{print $NF}'`
-        case "$ext" in
-            "xz" ) 
-                xz -dc "$arg_srcfolder/$tarfile" | tar x -C "$arg_dstfolder"
-                ;;
-            "tar" ) 
-                tar xvf "$arg_srcfolder/$tarfile" -C "$arg_dstfolder"
-                ;;
-            * )
-                fname=`basename "$tarfile"`
-                pathname=`dirname "$tarfile"`
-                mkdir -p "$arg_dstfolder$dstsubfolder"
-                cp "$arg_srcfolder/$tarfile" "$arg_dstfolder$dstsubfolder/$fname"
-                if [ "$attributes" != "" ]; then chmod $attributes "$arg_dstfolder$dstsubfolder/$fname"; fi
-                ug=""
-                if [ "$user" != "" ]; then ug=$user; else ug=""; fi
-                if [ "$group" != "" ]; then ug=$ug:$group; fi
-                if [ "$ug" != "" ]; then chown $ug "$arg_dstfolder$dstsubfolder/$fname"; fi
-                ;;
-        esac
+
+#Check for @ included file
+	local firstChar=`expr substr $tarfile 1 1`
+	if [ "$firstchar" = "@" ]; then 
+		process_file `expr substr $tarfile 2 99`
+	else
+	        ext=`echo $tarfile|awk -F . '{print $NF}'`
+        	case "$ext" in
+	            "xz" ) 
+	                xz -dc "$arg_srcfolder/$tarfile" | tar x -C "$arg_dstfolder"
+	                ;;
+	            "tar" ) 
+	                tar xvf "$arg_srcfolder/$tarfile" -C "$arg_dstfolder"
+	                ;;
+	            * )
+	                fname=`basename "$tarfile"`
+	                pathname=`dirname "$tarfile"`
+	                mkdir -p "$arg_dstfolder$dstsubfolder"
+	                cp "$arg_srcfolder/$tarfile" "$arg_dstfolder$dstsubfolder/$fname"
+	                if [ "$attributes" != "" ]; then chmod $attributes "$arg_dstfolder$dstsubfolder/$fname"; fi
+	                ug=""
+	                if [ "$user" != "" ]; then ug=$user; else ug=""; fi
+	                if [ "$group" != "" ]; then ug=$ug:$group; fi
+	                if [ "$ug" != "" ]; then chown $ug "$arg_dstfolder$dstsubfolder/$fname"; fi
+	                ;;
+	        esac
+	fi
     fi
 }
 

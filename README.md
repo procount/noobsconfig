@@ -3,7 +3,7 @@ noobsconfig
 
 Allows you to customise the installation of a NOOBS distro installation
 
-##Introduction##
+##Introduction
 This repository contains files to customise the installation of a standard NOOBS distro installation on a Raspberry Pi.
 
 After NOOBS installs the standard boot and root images to the SD card, this modification allows a custom set of files to be copied, decompressed and extracted onto each partition of the distro being installed.
@@ -13,14 +13,14 @@ Please note: this will only work with the standard version of NOOBS and not with
 A quick description of how to use this is followed by a more detailed description below.
 
 
-##Quick Start##
+##Quick Start
 1. Unzip/copy the standard NOOBS files to a blank SD card.
 2. Unzip/copy the noobsconfig.zip over the top of the noobs files. (This will overwrite the partition_setup.sh files for each of the os distros).
 Your NOOBS SD card is now modified to support customisations!
 3. Put any customisation files in the /os/distro folders.
 4. Insert your SD card in the RPi and install the desired OS as usual
 
-###Customisation Files###
+###Customisation Files
 
 First, a brief explanantion about `flavours`.
 For each distro NOOBS allows different `flavours`, which allow the same distro to be installed, but with slightly different customised options that are applied on first boot. Currently this feature is only used on Raspbian to allow booting into the desktop or straight to scratch, but it could be applied to any distro. In this documentation I use `flavour` to represent the "os name or flavour name". Typically a flavour name is the os name appended with a dash and the flavour. See `flavours.json` if it exists for your distro.
@@ -36,15 +36,15 @@ The .tar file will be un-tarred to the root of the appropriate partition.
 The .xz file is assumed to be a compressed tar file and is treated in the same way after decompression.
 The .txt file is used to install a list of files, each one on a separate line. These are described in more detail in Advanced Customisations below.
 
-###Repository Organisation###
+###Repository Organisation
 * noobsconfig - contains noobsconfig.zip to allow customisations to be made to a distro
 * dev - contains the contents of noobsconfig.zip
 * helpers - contains helper scripts to help create custom tarballs
 * Examples - contains example customisations
 
-##Detailed Description##
+##Detailed Description
 
-###What can it be used for?###
+###What can it be used for?
 This method is for simple customisations of a distro. It behaves a bit like applying a patch file to the distro after it has been installed.
 As such it can replace or add files to the distro, but not delete existing files.
 Some examples of its use are therefore:
@@ -53,18 +53,18 @@ Some examples of its use are therefore:
 * provide standard configurations for config.txt (instead of requiring raspi-config to be executed on first execution)
 * install a standard set of "lesson support materials" into the `/home/pi` folder.
 
-###Benefits###
+###Benefits
 * ideal for small customisations
 * does not require the creation of a full customised OS
 * independent of NOOBS distributions
 * Simple to apply to the standard NOOBS download
 * the same customisations can be quickly and easily applied to a subsequent update of the NOOBS download
 
-###What it doesn't do###
+###What it doesn't do
 Currently it does not execute user-defined scripts, it simply copies/replaces existing files.
 Whilst it could be used to copy entire packages onto the distro, this use is not recommended and it is suggested to follow the existing instructions to create a customised OS if the modifications are extensive.
 
-###Rationale###
+###Rationale
 I like to use the latest version of NOOBS whenever it is released, ensuring I get all the latest updates and distro versions.
 However, whenever I update to a new version, or reinstall a distro from NOOBS, I end up having to apply the same customisations and installations over and over again.
 I've now learnt to create scripts for these common operations and a custom tarball that I can use to overwrite files like `/etc/network/interfaces` etc.
@@ -74,7 +74,7 @@ From a simple enhancement suggestion, this has developed from extracting a tarba
 
 The ability to patch using a flavour would be ideal for schools and others, it could save building full custom images and avoids having to rebuild it for every new release of Raspbian. It would also allow Zero-config setups, for instance you'd be able to configure NOOBS to auto-install a distro which has direct wifi networking enabled out of the box.
  
-##How does the noobsconfig customisation work?##
+##How does the noobsconfig customisation work?
 
 After noobs has installed a distro, it runs the `partition_setup.sh` script for that distro.
 Unzipping noobsconfig.zip over noobs replaces the partition_setup.sh files with a new version that adds a single line that executes customise.sh. This customise.sh script looks for files in the distro folder with a basename of (flavour)_(partitionName) and an extension of either `.tar`, `.tar.xz` or `.txt`. (The contents of noobsconfig.zip can be found in the `dev` folder.)
@@ -109,7 +109,7 @@ If you add any other distros, flavours or OS partition names, you need to name t
         `if [ -e /mnt/customise.sh ]; then . /mnt/customise.sh; fi`
 This technique can also be used on the data partition - just create a partition_setup.sh file containing just this line. However, it is not really necessary as you could more easily just replace the original data.tar.xz file with your own, since it only contains a README.txt file.
 
-###How to Create a Custom Tarball###
+###How to Create a Custom Tarball
 
 These instructions assume you already have a working installation of a distro on the RPi and you want to capture the customisations you have made for future installations of the same distro.
 
@@ -130,7 +130,7 @@ $>sudo xz &lt;flavour&gt;_&lt;partitionName&gt;.tar```
 (See the Helpers folder for alternative ways to do this using scripts).
 5. Copy the tarball to the appropriate OS folder.
 
-###Advanced Customisation###
+###Advanced Customisation
 Sometimes, you may want to have greater control over your customisations. Maybe you want to:
 * segregate them into separate tar files for distinct uses.
 * give them better names according to their use.
@@ -168,7 +168,7 @@ Here are some examples to illustrate this:
 
 (The last 2 examples above show how using this direct copy technique, it is possible to specify the '/etc/network/interfaces' and '/etc/wpa_supplicant/wpa_supplicant.conf' files for easy wifi setup from Windows, whilst specifying the correct attributes and avoiding the problem of creating Tar files from Windows.)
 
-####Filename####
+####Filename
 This is the name of the file you want to copy from the recovery partition.
 It can be stored in the /os/distro folder, or any subfolder. If you put it in a subfolder then this must be specified.
 e.g. 
@@ -181,18 +181,18 @@ If you need to include a filename that has embedded spaces in it, then you must 
 e.g.
 * "my wifi/interfaces" /etc/network 0644 root root
 
-####Destination####
+####Destination
 This is the name of the destination folder where the file is to be stored on the target partition, relative to the root. E.g. `/home/pi`. It must begin with a slash, but have no trailing slash.
 This field is optional. If not specified, then the root directory is used.
 If you need to include a destination pathname that includes embedded spaces,then enclose this in double quotations.
 
-####Attributes####
+####Attributes
 This specifies the attributes to be applied to the new file using the chmod command. e.g. `0644`. I guess options such as `+x` would also work but I've not tried.
 
-####User####
+####User
 This specifies the new user of the file e.g. `pi` or `root` etc.
 
-####Group####
+####Group
 This specifies the new group of the file e.g. `root`
 
 ###Selecting a Method of customisation###
@@ -201,7 +201,7 @@ It can be confusing to decide which type of customisation to use, so here is a s
 * TAR.XZ files are TAR files that have been compressed using the XZ program. They therefore retain the advantages of the TAR file's manageability, but also avoid the TAR file's largish size. It is best to compress them on the RPi, but it can be done on another Linux distro, but not so easily on Windows.
 * If you want to create your customisation on Windows, referencing files from the TXT file may be the easiest method. This does not provide any compression, nor does it collect the separate files into one single file for manageability. However, it does provide control of user permissions and ownership. This is also a convenient method if you only want to install 1 or 2 small files. If you are creating script files on Windows, be careful to choose Linux line endings. Some editing programs, like Notepad++ allow you to visualise the line endings and change them from Windows to Linux and vice versa.
 
-##Testing & Retrospective customisation##
+##Testing & Retrospective customisation
 
 Since noobsconfig executes after NOOBS has installed a distro, it can be a lengthy process to test any customisations as they are developed, because each test potentially means installing a distro and waiting to see the result. Also, if you already have a Raspbian distro installed by noobs, then you probably don't want to have to overwrite it all just to test your scripts. Or maybe you have created a new 'flavour' to install your customisations and you want to install them onto your existing distro that was installed as another flavour.
 
@@ -211,12 +211,12 @@ The purpose of `retro.sh` is to apply a set of customisations from the recovery 
 
 The main thing that needs to be done is to mount the recovery partition so that it is accessible. Also note that the installation has to be done by the root user (or using sudo) since it may need to (over)write system files.
 
-###retro.sh###
+###retro.sh
 Usage: sudo ./retro.sh [source folder] [destination folder] [(flavour)_(partitionName)]
 Example1: sudo ./retro.sh /mnt/os/Raspbian / Raspbian_root
 Example2: sudo ./retro.sh /mnt/os/Raspbian /boot/ Raspbian_boot
 
-###Example use of retro.sh###
+###Example use of retro.sh
 Here is an example script file that automates the retrospective installation or testing of a Raspbian customisation.
 
     #!/bin/sh
@@ -240,7 +240,7 @@ Here is an example script file that automates the retrospective installation or 
     umount /mnt
     echo "Customisation done."
 
-##Further Examples##
+##Further Examples
 You will find some examples of how to apply some configurations to Raspbian in the Examples/Raspbian folder.
 Please see zeroconf_wifi.md for a very quick setup of a WPA/WPA2 wifi network.
 I welcome other examples, particularly for the other Linux distros.

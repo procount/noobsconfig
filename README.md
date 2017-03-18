@@ -125,7 +125,8 @@ For example:
 4. Now create the tar ball using this text file as input, as follows:
 
 ```$>sudo tar cvf &lt;flavour&gt;_&lt;partitionName&gt;.tar -T files.txt
-$>sudo xz &lt;flavour&gt;_&lt;partitionName&gt;.tar```
+$>sudo xz &lt;flavour&gt;_&lt;partitionName&gt;.tar
+```
 
 (See the Helpers folder for alternative ways to do this using scripts).
 5. Copy the tarball to the appropriate OS folder.

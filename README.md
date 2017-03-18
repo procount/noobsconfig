@@ -120,7 +120,8 @@ For example:
 
 ```$>sudo nano files.txt<br>
 /etc/network/interfaces
-/etc/init.d/rc.local```
+/etc/init.d/rc.local
+```
 
 4. Now create the tar ball using this text file as input, as follows:
 

@@ -197,7 +197,7 @@ This specifies the new user of the file e.g. `pi` or `root` etc.
 #### Group
 This specifies the new group of the file e.g. `root`
 
-### Selecting a Method of customisation###
+### Selecting a Method of customisation
 It can be confusing to decide which type of customisation to use, so here is a short guide.
 * TAR files are very convenient when there are many related files to be installed, possibly in different folders, and where file permissions or ownership are important. They capture the contents, ownership and permissions of each file into a single TAR file which is then easily managed. So they are best created directly on an existing distro on the RPi. Not so many compression programs allow you to create a TAR file on Windows (7-zip can), but nevertheless, the file permissions and attributes cannot be set. Plain TAR files are not compressed and append 2 blocks of 512 bytes at the end. So the minimum size of a TAR file is 10kB. This can be quite an overhead if you only want to install a couple of small script files.
 * TAR.XZ files are TAR files that have been compressed using the XZ program. They therefore retain the advantages of the TAR file's manageability, but also avoid the TAR file's largish size. It is best to compress them on the RPi, but it can be done on another Linux distro, but not so easily on Windows.

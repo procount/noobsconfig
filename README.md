@@ -3,6 +3,8 @@ noobsconfig
 
 Allows you to customise the installation of a NOOBS distro installation
 
+[UPDATE: This project is now quite old, and some of the examples are now out of date, but the principle is still valid and works. However, the functionality of noobsconfig is built into PINN (a fork of NOOBS) so it is preferable to use PINN over NOOBS for this application. It avoids having to copy noobsconfig.zip and patch the partition_setup.sh files.] 
+
 ## Introduction
 This repository contains files to customise the installation of a standard NOOBS distro installation on a Raspberry Pi.
 
